@@ -9,7 +9,8 @@ export default class AddSongForm extends React.Component {
         super(props);
         this.state = {
             songs:[],
-            value:''
+            value:'',
+            showError: false
         };
         this.addSongtoPlaylist = props.addSongtoPlaylist;
         this.handleChange = this.handleChange.bind(this);
@@ -26,7 +27,10 @@ export default class AddSongForm extends React.Component {
 
     handleChange(event) {
         event.preventDefault()
-        this.setState({value: event.target.value});
+        this.setState({
+            value: event.target.value,
+            showError: false
+        });
 
     }
 
@@ -34,7 +38,12 @@ export default class AddSongForm extends React.Component {
         event.preventDefault()
         console.log(this.state.value)
 
-        this.addSongtoPlaylist(this.state.value);
+        this.addSongtoPlaylist(this.state.value)
+            .catch(err=>{
+                this.setState({
+                    showError: true
+                })
+            });
 
 
     }
@@ -46,6 +55,11 @@ export default class AddSongForm extends React.Component {
                 <form className="form-horizontal" noValidate name="songSelect" onSubmit={this.handleSubmit}>
                     <fieldset>
                         <legend>Add to Playlist</legend>
+                        {
+                            this.state.showError?
+                                <div className="alert alert-warning">Song is duplicate</div>
+                                    : null
+                        }
                         <div className="form-group">
                             <label htmlFor="song" className="col-xs-2 control-label">Song</label>
                             <div className="col-xs-10">

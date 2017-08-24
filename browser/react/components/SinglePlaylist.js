@@ -11,6 +11,7 @@ export default class SinglePlaylist extends React.Component {
         super();
         this.state = {
             playlist: {}
+
         };
         this.addSongtoPlaylist = this.addSongtoPlaylist.bind(this)
     }
@@ -48,7 +49,7 @@ export default class SinglePlaylist extends React.Component {
 
     addSongtoPlaylist (songId){
         const playlistId = this.props.match.params.playlistId;
-        axios.post(`/api/playlists/${playlistId}/songs`, { id: songId })
+        return axios.post(`/api/playlists/${playlistId}/songs`, { id: songId })
             .then(res => res.data)
             .then(result => {
                 console.log(this.state.playlist);
