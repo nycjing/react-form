@@ -2,6 +2,7 @@ import React from 'react';
 import Songs from './Songs.jsx'
 import axios from 'axios';
 import { Route, Switch, Link, Redirect } from 'react-router-dom';
+import AddSongForm from "./AddSongForm";
 
 
 export default class SinglePlaylist extends React.Component {
@@ -11,6 +12,7 @@ export default class SinglePlaylist extends React.Component {
         this.state = {
             playlist: {}
         };
+        this.addSongtoPlaylist = this.addSongtoPlaylist.bind(this)
     }
 
     componentDidMount () {
@@ -42,8 +44,21 @@ export default class SinglePlaylist extends React.Component {
                 });
         }
 
-}
+    }
 
+    addSongtoPlaylist (songId){
+        const playlistId = this.props.match.params.playlistId;
+        axios.post(`/api/playlists/${playlistId}/songs`, { id: songId })
+            .then(res => res.data)
+            .then(result => {
+                console.log(this.state.playlist);
+                 var newPlaylist = this.state.playlist.songs.concat(result);
+                 this.state.playlist.songs = newPlaylist;
+                this.setState({
+                    playlist: this.state.playlist
+                })
+            })
+    }
 
 render(){
         const playlist = this.state.playlist;
@@ -53,6 +68,7 @@ render(){
         <Songs songs={playlist.songs} /> {/** Hooray for reusability! */}
         { playlist.songs && !playlist.songs.length && <small>No songs.</small> }
         <hr />
+            <AddSongForm addSongtoPlaylist ={this.addSongtoPlaylist}/>
         </div>
         )
     }

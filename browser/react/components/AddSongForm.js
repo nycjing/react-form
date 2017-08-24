@@ -8,50 +8,54 @@ export default class AddSongForm extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            song:{}
+            songs:[],
+            value:''
         };
+        this.addSongtoPlaylist = props.addSongtoPlaylist;
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.addPlaylist = props.addPlaylist
     }
 
+    componentDidMount () {
+        axios.get('/api/songs/')
+            .then(res => res.data)
+            .then(songs => {
+                this.setState({ songs })
+            });
+    }
 
     handleChange(event) {
         event.preventDefault()
-        this.setState({inputValue: event.target.value});
-        if (this.state.inputValue && this.state.inputValue.length < 16)  {
-            this.setState({flag: false, warning: null })
-        } else if (this.state.inputValue && this.state.inputValue.length >= 16) {
-            this.setState({flag: true, warning: "Too many characters"})
-        } else {
-            this.setState({flag: true, warning: "Need a name"})
-        }
-        console.log(this.state.inputValue.length)
+        this.setState({value: event.target.value});
 
     }
 
     handleSubmit (event) {
         event.preventDefault()
-        this.addPlaylist(this.state.inputValue)
-        this.setState({inputValue: '', flag: true});
+        console.log(this.state.value)
+
+        this.addSongtoPlaylist(this.state.value);
+
+
     }
 
     render () {
 
         return (
-
-
-
             <div className="well">
-                <form className="form-horizontal" noValidate name="songSelect">
+                <form className="form-horizontal" noValidate name="songSelect" onSubmit={this.handleSubmit}>
                     <fieldset>
                         <legend>Add to Playlist</legend>
                         <div className="form-group">
                             <label htmlFor="song" className="col-xs-2 control-label">Song</label>
                             <div className="col-xs-10">
-                                <select className="form-control" name="song">
-                                    <option value="SONGID_GOES_HERE">song name</option>
-                                    <option value="SONGID_GOES_HERE">another song name</option>
+                                <select className="form-control" name="song" value={this.state.value} onChange={this.handleChange}>
+                                    {
+                                        this.state.songs.map(song => (
+                                            <option value={song.id} key={song.id}>{song.name}</option>
+                                        ))
+
+                                    }
                                 </select>
                             </div>
                         </div>
