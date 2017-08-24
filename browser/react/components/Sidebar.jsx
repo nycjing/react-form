@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Sidebar = (props) => {
-
+  const playlist = props.playlists;
   return (
     <sidebar>
       <img src="juke.svg" className="logo" />
@@ -24,6 +24,15 @@ const Sidebar = (props) => {
                     <span className="glyphicon glyphicon-plus"></span> PLAYLIST
                 </Link>
             </h4>
+            <hr />
+            <ul className="list-unstyled">
+                <li className="playlist-item menu-item">
+                    <Link to="FILL_ME_IN">some playlist</Link>
+                </li>
+                <li className="playlist-item menu-item">
+                    <Link to="WHERE_TO_GO">another playlist</Link>
+                </li>
+            </ul>
         </section>
     </sidebar>
   );

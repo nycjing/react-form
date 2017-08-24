@@ -1,31 +1,32 @@
 import React from 'react';
 import { Route, Switch, Link, Redirect } from 'react-router-dom';
-// import axios from 'axios';
+import axios from 'axios';
 
 
 export default class NewPlaylist extends React.Component {
 
-    constructor () {
-        super();
+    constructor (props) {
+        super(props);
         this.state = {
             inputValue: '',
             flag: true,
-            warning: null
+            warning: ''
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    const playlists = props.playlists;
+
     handleChange(event) {
         event.preventDefault()
-        //console.log(event.target.value, this.state.inputValue, this.state.flag);
         this.setState({inputValue: event.target.value});
         if (this.state.inputValue && this.state.inputValue.length < 16)  {
-            this.setState({flag: false})
+            this.setState({flag: false, warning: null })
         } else if (this.state.inputValue && this.state.inputValue.length >= 16) {
             this.setState({flag: true, warning: "Too many characters"})
         } else {
-            this.setState({flag: true, warning: "Please enter a name"})
+            this.setState({flag: true, warning: "Need a name"})
         }
         console.log(this.state.inputValue.length)
 
@@ -33,10 +34,12 @@ export default class NewPlaylist extends React.Component {
 
     handleSubmit (event) {
         event.preventDefault()
-        //console.log('submitbutton',this.state.inputValue);
+        axios.post('/api/playlists', { name: this.state.inputValue })
+            .then(res => res.data)
+            .then(result => {
+                console.log(result) // response json from the server!
+            });
         this.setState({inputValue: '', flag: true});
-        //console.log(this.state.inputValue)
-
     }
 
     render () {
@@ -48,9 +51,9 @@ export default class NewPlaylist extends React.Component {
                         <legend>New Playlist</legend>
                         <div className="form-group">
                             {
-                                if (this.state.warning) {
+                                (this.state.warning) &&
                                     <div className="alert alert-warning">{this.state.warning}</div>
-                                }
+
                             }
 
                             <label className="col-xs-2 control-label">Name</label>
