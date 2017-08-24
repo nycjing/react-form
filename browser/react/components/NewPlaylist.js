@@ -14,9 +14,9 @@ export default class NewPlaylist extends React.Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.addPlaylist = props.addPlaylist
     }
 
-    const playlists = props.playlists;
 
     handleChange(event) {
         event.preventDefault()
@@ -34,11 +34,7 @@ export default class NewPlaylist extends React.Component {
 
     handleSubmit (event) {
         event.preventDefault()
-        axios.post('/api/playlists', { name: this.state.inputValue })
-            .then(res => res.data)
-            .then(result => {
-                console.log(result) // response json from the server!
-            });
+        this.addPlaylist(this.state.inputValue)
         this.setState({inputValue: '', flag: true});
     }
 

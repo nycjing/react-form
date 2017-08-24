@@ -7,6 +7,8 @@ import SingleArtist from './SingleArtist.jsx';
 import Sidebar from './Sidebar.jsx';
 import Player from './Player.jsx';
 import NewPlaylist from './NewPlaylist';
+import SinglePlaylist from './SinglePlaylist';
+import axios from 'axios';
 
 export default class Main extends Component {
 
@@ -15,6 +17,7 @@ export default class Main extends Component {
         this.state = {
             playlists: []
         };
+        this.addPlaylist = this.addPlaylist.bind(this)
     }
 
     componentDidMount () {
@@ -24,6 +27,16 @@ export default class Main extends Component {
                 this.setState({ playlists })
             });
     }
+
+    addPlaylist (playlistName) {
+      axios.post('/api/playlists', { name: playlistName })
+              .then(res => res.data)
+              .then(result => {
+                  this.setState({
+                    playlists: [...this.state.playlists, result]
+                  })
+              })
+      }
 
 
 
@@ -41,7 +54,8 @@ export default class Main extends Component {
               <Route exact path="/artists" component={AllArtists} />
               <Route path="/artists/:artistId" component={SingleArtist} />
               <Route path="/new-playlist" render={() => (
-                  <NewPlaylist playlists={this.state.playlists} />)} />
+                  <NewPlaylist addPlaylist = {this.addPlaylist} />)} />
+              <Route path="/playlists/:playlistId" component={SinglePlaylist} />
             </Switch>
           </div>
           <Player />
